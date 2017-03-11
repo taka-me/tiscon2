@@ -18,6 +18,10 @@
             <div class="ui information container center aligned ">
                 <h1 class="ui header">SIG COLLE</h1>
                 <h2>キャンペーン一覧</h2>
+                <form method="post" action="/result">
+                    <input type="text" name="search" />
+                    <button>検索</button>
+                </form>
                 <div th:each="campaign : ${campaigns}">
                     <a class="campaigns" th:href="@{~/campaign/{id}(id=${campaign.campaignId})}" th:text="${campaign.title}">title</a>
                 </div>
