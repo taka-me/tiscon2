@@ -107,8 +107,12 @@ public class CampaignController {
 
         // TODO タイトル, 目標人数を登録する
         Campaign model = new Campaign();
-        model.setStatement(processor.markdownToHtml(form.getStatement()));
-        model.setCreateUserId(principal.getUserId());
+        model.setStatement(processor.markdownToHtml(form.getStatement()));  //本文
+        model.setCreateUserId(principal.getUserId());   //ユーザID
+        model.setTitle(form.getTitle());   //タイトル
+        model.setGoal(Long.parseLong(form.getGoal()));  //目標人数
+
+
 
         CampaignDao campaignDao = domaProvider.getDao(CampaignDao.class);
         // TODO Databaseに登録する
