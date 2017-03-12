@@ -129,7 +129,7 @@ public class CampaignController {
 
 
         HttpResponse response = redirect("/campaign/" + model.getCampaignId(), SEE_OTHER);
-        response.setFlash(new Flash<>(""/* TODO: キャンペーンが新規作成できた旨のメッセージを生成する */));
+        response.setFlash(new Flash<>("キャンペーンが作成できたよ！！やったね！！"/* TODO: キャンペーンが新規作成できた旨のメッセージを生成する */));
 
         return response;
     }
@@ -154,12 +154,27 @@ public class CampaignController {
         User user = userDao.selectByUserId(campaign.getCreateUserId());
 
         SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
-        int signatureCount = signatureDao.countByCampaignId(campaignId);
+
+        int signatureCount = signatureDao.countByCampaignId(campaignId); //賛同者数
+        int result = Integer.parseInt(campaign.getGoal().toString()) - signatureCount; //目標数-賛同者数
+
+        String s_result = String.valueOf(result); //resultをString型に変換
+
+        String sign_message =""; //最終的に表示するメッセージを格納
+
+        if(result <= 0) {
+            //目標を達成できている場合
+            sign_message = campaign.getGoal().toString() + "人の賛同者が集まり，目標を達成しました！！";
+        } else {
+            //目標を達成していない場合
+            sign_message = campaign.getGoal().toString()+ "人まで残り" + s_result +"人の賛同者が必要です！";
+        }
 
         return templateEngine.render("campaign/index",
                 "campaign", campaign,
                 "user", user,
                 "signatureCount", signatureCount,
+                "sign_message", sign_message,
                 "signature", form,
                 "message", message
         );
