@@ -1,1 +1,1 @@
-SELECT * FROM campaign
+SELECT * FROM campaign order by campaign_id desc;
