@@ -144,6 +144,7 @@ public class CampaignController {
             return response;
 
         }
+
         campaignDao.insert(model);  //campaignDaoにmodelに入った情報を格納する
 
         HttpResponse response = redirect("/campaign/" + model.getCampaignId(), SEE_OTHER);
