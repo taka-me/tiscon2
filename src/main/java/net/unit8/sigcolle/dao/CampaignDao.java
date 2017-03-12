@@ -7,7 +7,7 @@ import net.unit8.sigcolle.model.Campaign;
 import org.seasar.doma.Dao;
 import org.seasar.doma.Insert;
 import org.seasar.doma.Select;
-
+//
 /**
  * @author kawasima
  */
