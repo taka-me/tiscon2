@@ -90,6 +90,7 @@ public class LoginController {
     @Transactional
     public HttpResponse logout(Session session) {
         session.clear();
+        session=null;
         HttpResponse response = redirect("/", SEE_OTHER);
         response.setSession(session);
         return response;

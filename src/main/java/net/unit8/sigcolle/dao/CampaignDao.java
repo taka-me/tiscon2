@@ -21,4 +21,7 @@ public interface CampaignDao {
 
     @Insert
     int insert(Campaign campaign);
+
+    @Select
+    int countSameName(String camTitle);
 }

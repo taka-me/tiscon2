@@ -3,6 +3,7 @@ package net.unit8.sigcolle.controller;
 import javax.inject.Inject;
 import javax.transaction.Transactional;
 
+import enkan.collection.Multimap;
 import enkan.component.doma2.DomaProvider;
 import enkan.data.Flash;
 import enkan.data.HttpResponse;
@@ -63,28 +64,40 @@ public class CampaignController {
     @Transactional
     public HttpResponse sign(SignatureForm form ,
                              Session session) {
+        if(session!=null) {
+            LoginUserPrincipal principal = (LoginUserPrincipal) session.get("principal");
 
-        if(session==null){
+            if(principal!=null){
+                //sessionもprincipalもnullでないときは賛同処理を実行
+
+
+
+
+                if (form.hasErrors()) {
+                    return showCampaign(form.getCampaignIdLong(), form, null);
+                }
+                Signature signature = new Signature();
+                signature.setCampaignId(form.getCampaignIdLong());
+                signature.setName(form.getName());
+                signature.setSignatureComment(form.getSignatureComment());
+
+                SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
+                signatureDao.insert(signature);
+
+                HttpResponse response = redirect("/campaign/" + form.getCampaignId(), SEE_OTHER);
+                response.setFlash(new Flash<>("ご賛同ありがとうございました！"));
+                return response;
+
+            }else {
+                //principallがnullならregisterページへ
+                HttpResponse response = redirect("../../register", SEE_OTHER);
+                return response;
+            }
+        } else {
+            //sessionがnullならregisterページへ
             HttpResponse response = redirect("../../register", SEE_OTHER);
             return response;
-        } else {
-            if (form.hasErrors()) {
-                return showCampaign(form.getCampaignIdLong(), form, null);
-            }
-            Signature signature = new Signature();
-            signature.setCampaignId(form.getCampaignIdLong());
-            signature.setName(form.getName());
-            signature.setSignatureComment(form.getSignatureComment());
-
-            SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
-            signatureDao.insert(signature);
-
-            HttpResponse response = redirect("/campaign/" + form.getCampaignId(), SEE_OTHER);
-            response.setFlash(new Flash<>("ご賛同ありがとうございました！"));
-            return response;
-
         }
-
     }
 
     /**
@@ -121,21 +134,17 @@ public class CampaignController {
         model.setTitle(form.getTitle());   //タイトル
         model.setGoal(Long.parseLong(form.getGoal()));  //目標人数
 
-
-
         CampaignDao campaignDao = domaProvider.getDao(CampaignDao.class);
         // TODO Databaseに登録する
-        campaignDao.insert(model);  //campaignDaoにmodelに入った情報を格納する
-        /*
-        if(campaignDao.countByTitle(form.getTitle())==1){
-            // 同タイトルがすでにある場合
-            return templateEngine.render("",
-                    "user", form
-            );
+
+        //同じ名前のキャンペーンがある
+        CampaignDao camDao = domaProvider.getDao(CampaignDao.class);
+        if (camDao.countSameName(form.getTitle()) > 0) {
+            HttpResponse response = redirect("/auth/campaign", SEE_OTHER);
+            return response;
+
         }
-        */
-
-
+        campaignDao.insert(model);  //campaignDaoにmodelに入った情報を格納する
 
         HttpResponse response = redirect("/campaign/" + model.getCampaignId(), SEE_OTHER);
         response.setFlash(new Flash<>("キャンペーンが作成できたよ！！やったね！！"/* TODO: キャンペーンが新規作成できた旨のメッセージを生成する */));
