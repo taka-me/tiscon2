@@ -72,7 +72,6 @@ public class CampaignController {
 
 
 
-
                 if (form.hasErrors()) {
                     return showCampaign(form.getCampaignIdLong(), form, null);
                 }
