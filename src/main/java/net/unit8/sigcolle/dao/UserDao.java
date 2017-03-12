@@ -20,8 +20,7 @@ public interface UserDao {
     @Select
     int countByEmail(String email);
 
-    @Select
-    int countByUserId(Long userId);
+
 
     @Select(ensureResult = true)
     User selectByEmail(String email);
