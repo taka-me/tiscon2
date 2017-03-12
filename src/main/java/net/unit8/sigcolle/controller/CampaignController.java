@@ -77,11 +77,11 @@ public class CampaignController {
                     return showCampaign(form.getCampaignIdLong(), form, null);
                 }
 
-                UserDao userDao = domaProvider.getDao(UserDao.class);
+                SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
 
 
-                if (userDao.countByUserId(principal.getUserId()) > 0) {
-                    HttpResponse response = redirect("/auth/campaign", SEE_OTHER);
+                if (signatureDao.countByName(principal.getUserName()) > 0) {
+                    HttpResponse response = redirect("/", SEE_OTHER);
                     return response;
 
                 }
@@ -95,7 +95,7 @@ public class CampaignController {
                 signature.setName(form.getName());
                 signature.setSignatureComment(form.getSignatureComment());
 
-                SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
+               // SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
                 signatureDao.insert(signature);
 
                 HttpResponse response = redirect("/campaign/" + form.getCampaignId(), SEE_OTHER);
