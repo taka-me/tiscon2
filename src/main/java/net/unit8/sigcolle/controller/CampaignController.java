@@ -125,8 +125,16 @@ public class CampaignController {
 
         CampaignDao campaignDao = domaProvider.getDao(CampaignDao.class);
         // TODO Databaseに登録する
-
         campaignDao.insert(model);  //campaignDaoにmodelに入った情報を格納する
+        /*
+        if(campaignDao.countByTitle(form.getTitle())==1){
+            // 同タイトルがすでにある場合
+            return templateEngine.render("",
+                    "user", form
+            );
+        }
+        */
+
 
 
         HttpResponse response = redirect("/campaign/" + model.getCampaignId(), SEE_OTHER);
