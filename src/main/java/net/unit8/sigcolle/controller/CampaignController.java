@@ -79,15 +79,11 @@ public class CampaignController {
                 SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
 
 
-                if (signatureDao.countByName(principal.getUserName()) > 0) {
+                if (signatureDao.countByName(principal.getUserName(),form.getCampaignIdLong()) > 0) {
                     HttpResponse response = redirect("/", SEE_OTHER);
                     return response;
 
                 }
-
-
-
-
 
                 Signature signature = new Signature();
                 signature.setCampaignId(form.getCampaignIdLong());

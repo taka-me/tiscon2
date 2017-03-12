@@ -20,7 +20,7 @@ public interface SignatureDao {
     List<Signature> selectAllByCampaignId(Long campaignId);
 
     @Select
-    int countByName(String name);
+    int countByName(String name, long camId);
 
     @Insert
     int insert(Signature signature);
