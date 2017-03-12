@@ -75,6 +75,20 @@ public class CampaignController {
                 if (form.hasErrors()) {
                     return showCampaign(form.getCampaignIdLong(), form, null);
                 }
+
+                UserDao userDao = domaProvider.getDao(UserDao.class);
+
+
+                if (userDao.countByUserId(principal.getUserId()) > 0) {
+                    HttpResponse response = redirect("/auth/campaign", SEE_OTHER);
+                    return response;
+
+                }
+
+
+
+
+
                 Signature signature = new Signature();
                 signature.setCampaignId(form.getCampaignIdLong());
                 signature.setName(form.getName());

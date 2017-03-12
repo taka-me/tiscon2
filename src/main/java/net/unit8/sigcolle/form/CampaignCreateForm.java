@@ -31,4 +31,6 @@ public class CampaignCreateForm extends FormBase {
     @NotBlank
     @Digits(integer = 10, fraction = 0)
     private String goal;
+
+
 }
