@@ -61,21 +61,30 @@ public class CampaignController {
      * @return HttpResponse
      */
     @Transactional
-    public HttpResponse sign(SignatureForm form) {
-        if (form.hasErrors()) {
-            return showCampaign(form.getCampaignIdLong(), form, null);
+    public HttpResponse sign(SignatureForm form ,
+                             Session session) {
+
+        if(session==null){
+            HttpResponse response = redirect("../../register", SEE_OTHER);
+            return response;
+        } else {
+            if (form.hasErrors()) {
+                return showCampaign(form.getCampaignIdLong(), form, null);
+            }
+            Signature signature = new Signature();
+            signature.setCampaignId(form.getCampaignIdLong());
+            signature.setName(form.getName());
+            signature.setSignatureComment(form.getSignatureComment());
+
+            SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
+            signatureDao.insert(signature);
+
+            HttpResponse response = redirect("/campaign/" + form.getCampaignId(), SEE_OTHER);
+            response.setFlash(new Flash<>("ご賛同ありがとうございました！"));
+            return response;
+
         }
-        Signature signature = new Signature();
-        signature.setCampaignId(form.getCampaignIdLong());
-        signature.setName(form.getName());
-        signature.setSignatureComment(form.getSignatureComment());
 
-        SignatureDao signatureDao = domaProvider.getDao(SignatureDao.class);
-        signatureDao.insert(signature);
-
-        HttpResponse response = redirect("/campaign/" + form.getCampaignId(), SEE_OTHER);
-        response.setFlash(new Flash<>("ご賛同ありがとうございました！"));
-        return response;
     }
 
     /**
